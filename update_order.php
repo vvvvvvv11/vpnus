@@ -1,16 +1,20 @@
 <?php
 header('Content-Type: application/json');
-$input = json_decode(file_get_contents('php://input'), true);
-$id = $input['id'];
-$status = $input['status'];
 
-$file = __DIR__ . "/orders/$id.json";
-if (file_exists($file)) {
-    $order = json_decode(file_get_contents($file), true);
-    $order['status'] = $status;
-    file_put_contents($file, json_encode($order, JSON_UNESCAPED_UNICODE));
-    echo json_encode(['success' => true]);
-} else {
+$input  = json_decode(file_get_contents('php://input'), true);
+$id     = $input['id'] ?? '';
+$status = $input['status'] ?? '';
+
+if (!$id || !$status) {
     echo json_encode(['success' => false]);
+    exit;
 }
+
+$db = new SQLite3(__DIR__ . '/orders.db');
+$stmt = $db->prepare('UPDATE orders SET status = :status WHERE id = :id');
+$stmt->bindValue(':status', $status);
+$stmt->bindValue(':id',     $id);
+$stmt->execute();
+
+echo json_encode(['success' => true]);
 ?>
