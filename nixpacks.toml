@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.fileinfo", "php82Extensions.sqlite3"]
+nixPkgs = ["php", "phpExtensions.fileinfo", "phpExtensions.sqlite3", "phpExtensions.pdo", "phpExtensions.pdo_sqlite"]
 
 [phases.build]
 cmds = ["mkdir -p uploads && chmod 777 uploads"]
